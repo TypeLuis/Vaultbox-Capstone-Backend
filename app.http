@@ -1,0 +1,111 @@
+@baseUrl = http://localhost:3040
+@json = application/json
+
+POST {{baseUrl}}/api/user/
+Content-Type: {{json}}
+
+{
+    "name": "Luis",
+    "email": "test@test.com",
+    "password": "testingpassword"
+}
+
+###
+POST {{baseUrl}}/api/auth/
+Content-Type: {{json}}
+
+{
+    "email": "test@test.com",
+    "password": "testingpassword"
+}
+
+
+###
+# Register an admin user
+# NOTE: your schema defaults isAdmin=false, so you MUST set isAdmin=true in Mongo manually
+# (MongoDB Compass / shell) after creating this user.
+POST {{baseUrl}}/api/user
+Content-Type: {{json}}
+
+{
+  "name": "Admin User",
+  "email": "admin.user@example.com",
+  "password": "password123"
+}
+
+
+###
+# Login (normal user) -> copy token from response into @token below
+POST {{baseUrl}}/api/auth
+Content-Type: {{json}}
+
+{
+  "email": "test.user@example.com",
+  "password": "password123"
+}
+
+###
+# Login (admin user) -> copy token from response into @adminToken below
+POST {{baseUrl}}/api/auth
+Content-Type: {{json}}
+
+{
+  "email": "admin.user@example.com",
+  "password": "password123"
+}
+
+###
+# Set tokens here after login
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk5NGI3ZmZkMDg0ODk5NWI0ZDA3MDY1In0sImlhdCI6MTc3MTM2NzA3MCwiZXhwIjoxNzcxMzc3ODcwfQ._NG7gYNNqher89tcrJXeetFGKFeBlY9yj213EQ9YVYM
+@adminToken = REPLACE_WITH_ADMIN_TOKEN
+
+###
+# Get current user (protected) - uses x-auth-token header
+GET {{baseUrl}}/api/auth
+x-auth-token: {{token}}
+Accept: {{json}}
+
+###
+# Admin route (protected + adminAuth)
+# Expected:
+# - 200 "you are an admin!!" if admin
+# - 403 if not admin
+GET {{baseUrl}}/api/auth/admin
+x-auth-token: {{adminToken}}
+Accept: text/plain
+
+###
+# Admin route with NON-admin token (should 403)
+GET {{baseUrl}}/api/auth/admin
+x-auth-token: {{token}}
+Accept: text/plain
+
+###
+# Validation test: login with invalid email
+POST {{baseUrl}}/api/auth
+Content-Type: {{json}}
+
+{
+  "email": "not-an-email",
+  "password": "password123"
+}
+
+###
+# Validation test: login missing password
+POST {{baseUrl}}/api/auth
+Content-Type: {{json}}
+
+{
+  "email": "test.user@example.com"
+}
+
+###
+# Auth test: protected route with NO token (should 401)
+GET {{baseUrl}}/api/auth
+Accept: {{json}}
+
+###
+# Auth test: protected route with BAD token (should 401)
+GET {{baseUrl}}/api/auth
+x-auth-token: not.a.real.token
+Accept: {{json}}
