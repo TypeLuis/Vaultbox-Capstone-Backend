@@ -9,6 +9,10 @@ import authRoutes from './routes/authRoutes.js'
 import { PORT } from "./utilities/config.js";
 import cors from "cors";
 import helmet from "helmet";
+import si from "systeminformation";
+import deviceRouter from "./routes/deviceRoutes.js";
+import appRouter from "./routes/appRoutes.js";
+import fileRouter from "./routes/fileRoutes.js";
 
 // Setup
 const app = express()
@@ -22,7 +26,10 @@ app.use(cors()) // Allows controlled cross-origin requests so frontend apps on o
 app.use(express.json()) // allows to use json like getting req.body
 app.use(logReq);
 
-
+const cpu    = await si.cpu();        // manufacturer, brand, speed, cores
+const mem    = await si.mem();        // total, used, free RAM
+const osInfo = await si.osInfo();     // platform, distro, arch, hostname
+const fsSize = await si.fsSize();     // per-drive size, used, available
 
 // Routes
 app.get('/', (_req, res, _next) => {
@@ -31,6 +38,9 @@ app.get('/', (_req, res, _next) => {
 
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/device', deviceRouter)
+app.use('/api/app', appRouter)
+app.use('/api/file', fileRouter)
 
 // Error Middleware
 app.use(notFound)
@@ -39,5 +49,9 @@ app.use(globalerror)
 // Listener
 app.listen(PORT, ()=> {
     console.log(`server is running on PORT: ${PORT}`)
+    console.log(cpu)
+    console.log(mem)
+    console.log(osInfo)
+    console.log(fsSize)
     routesReport.print()
 })
