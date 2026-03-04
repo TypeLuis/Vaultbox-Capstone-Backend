@@ -7,6 +7,7 @@ import msgError from "../utilities/msgError.js";
 import { isValidId, toNumber } from "../utilities/functions.js";
 import { upload } from "../config/upload.js";
 import { minio, MINIO_BUCKET } from "../config/minioClient.js";
+import { auth } from "../middleware/auth.js";
 
 const fileRouter = express.Router();
 
@@ -47,6 +48,7 @@ function sha256(buffer: Buffer): string {
 // --------------------
 fileRouter.get(
   "/",
+  auth,
   (async (req, res, next) => {
     try {
       const { min, max, deviceId, fileType, q } = req.query
@@ -67,9 +69,9 @@ fileRouter.get(
       let files: any
 
       if (minSize !== null || maxSize !== null || q !== null) {
-        filter.size = {}
-        if (minSize !== null) filter.size.$gte = minSize
-        if (maxSize !== null) filter.size.$lte = maxSize
+        filter.sizeBytes = {}
+        if (minSize !== null) filter.sizeBytes.$gte = minSize
+        if (maxSize !== null) filter.sizeBytes.$lte = maxSize
         // regex to find query in title, $options: "i" to make case insensitive
         if (q !== null) filter.filename = { $regex: String(q), $options: "i" };
         files = await File.find(filter)
@@ -95,6 +97,7 @@ fileRouter.get(
 fileRouter.post(
   "/upload",
   upload.single("file"),
+  auth,
   (async (req: any, res, next) => {
     try {
       const userId = getRequesterUserId(req);
@@ -176,6 +179,7 @@ fileRouter.post(
 // --------------------
 fileRouter.get(
   "/:id/download",
+  auth,
   (async (req: any, res, next) => {
     try {
       const userId = getRequesterUserId(req);
@@ -216,6 +220,7 @@ fileRouter.get(
 // --------------------
 fileRouter.delete(
   "/:id",
+  auth,
   (async (req: any, res, next) => {
     try {
       const userId = getRequesterUserId(req);

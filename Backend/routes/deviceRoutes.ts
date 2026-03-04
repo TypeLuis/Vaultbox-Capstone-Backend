@@ -5,6 +5,7 @@ import msgError from "../utilities/msgError.js";
 import requireBody from "../middleware/requireBody.js";
 import { isValidId, toNumber } from "../utilities/functions.js";
 import si from "systeminformation";
+import { auth } from "../middleware/auth.js";
 
 
 type Drives = {
@@ -26,6 +27,7 @@ deviceRouter
 
     .post(
         requireBody(["userId"]),
+        auth,
         (async (req, res, next) => {
             const q = String(req.query.q || "");
             const { userId } = req.body
@@ -84,7 +86,7 @@ deviceRouter
             }
         }) as RequestHandler)
 
-    .get((async (req, res, next) => {
+    .get(auth,(async (req, res, next) => {
         try {
             const { userId, status, q } = req.query
 
@@ -122,7 +124,7 @@ deviceRouter
 deviceRouter
     .route('/:id')
 
-    .put(((async (req, res, next) => {
+    .put(auth,((async (req, res, next) => {
         const id = String(req.params.id)
         if (!isValidId(id)) return next(msgError(400, "Invalid device id"));
 
@@ -139,7 +141,7 @@ deviceRouter
         }
     }) as RequestHandler))
 
-    .delete(((async (req, res, next) => {
+    .delete(auth, ((async (req, res, next) => {
         const id = String(req.params.id)
         if (!isValidId(id)) return next(msgError(400, "Invalid Device id"));
 

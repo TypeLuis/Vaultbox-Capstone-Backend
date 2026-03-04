@@ -4,6 +4,7 @@ import msgError from "../utilities/msgError.js";
 import mongoose from "mongoose";
 import requireBody from "../middleware/requireBody.js";
 import { isValidId } from "../utilities/functions.js";
+import { auth } from "../middleware/auth.js";
 
 const appRouter = express.Router();
 
@@ -12,6 +13,7 @@ appRouter
 
     .post(
         requireBody(["deviceId", "name", "status", "port"]),
+        auth,
         (async (req, res, next) => {
             try {
                 if (!isValidId(String(req.body.deviceId))) return next(msgError(400, "Invalid deviceId"));
@@ -24,7 +26,7 @@ appRouter
             }
         }) as RequestHandler)
 
-    .get((async (req, res, next) => {
+    .get(auth(async (req, res, next) => {
         try {
             const { deviceId, status, q, port } = req.query
 
@@ -64,7 +66,7 @@ appRouter
 appRouter
     .route('/:id')
 
-    .put(((async (req, res, next) => {
+    .put(auth, ((async (req, res, next) => {
         const id = String(req.params.id)
         if (!isValidId(id)) return next(msgError(400, "Invalid App id"));
 
@@ -81,7 +83,7 @@ appRouter
         }
     }) as RequestHandler))
 
-    .delete(((async (req, res, next) => {
+    .delete(auth,((async (req, res, next) => {
         const id = String(req.params.id)
         if (!isValidId(id)) return next(msgError(400, "Invalid App id"));
 
