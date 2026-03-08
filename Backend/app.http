@@ -45,7 +45,7 @@ Content-Type: application/json
 
 # @name me
 GET {{baseUrl}}/api/auth
-x-auth-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjlhNjBlNTNiMTA0NDI5MDUzYzZkNDRjIn0sImlhdCI6MTc3MjUxMTgyOSwiZXhwIjoxNzcyNTIyNjI5fQ.5h80fH51V_KLpYXRQfKtTAnPkfITZWFgwQ4V4cbMeOc
+x-auth-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjlhNjBlNTNiMTA0NDI5MDUzYzZkNDRjIn0sImlhdCI6MTc3Mjg5ODgwNywiZXhwIjoxNzcyOTA5NjA3fQ.WVpkvN7o_1yZ44p6ehGW9mMc1Km3oMEzcyGrOAHmvhE
 
 ###
 @userId = {{me.response.body._id}}
@@ -62,23 +62,24 @@ x-auth-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjlhNjBl
 # @name createDevice
 POST {{baseUrl}}/api/device?q=no
 Content-Type: application/json
+x-auth-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjlhNjBlNTNiMTA0NDI5MDUzYzZkNDRjIn0sImlhdCI6MTc3Mjg5ODgwNywiZXhwIjoxNzcyOTA5NjA3fQ.WVpkvN7o_1yZ44p6ehGW9mMc1Km3oMEzcyGrOAHmvhE
 
-{
-  "userId": "{{userId}}",
-  "name": "VaultBox Main",
-  "drives": [
-    {
-      "fs": "/dev/sda1",
-      "type": "ext4",
-      "mount": "/",
-      "sizeMB": 500000,
-      "usedMB": 200000,
-      "availableMB": 300000,
-      "usePercent": 40,
-      "rw": true
-    }
-  ]
-}
+# {
+#   "userId": "{{userId}}",
+#   "name": "VaultBox Main",
+#   "drives": [
+#     {
+#       "fs": "/dev/sda1",
+#       "type": "ext4",
+#       "mount": "/",
+#       "sizeMB": 500000,
+#       "usedMB": 200000,
+#       "availableMB": 300000,
+#       "usePercent": 40,
+#       "rw": true
+#     }
+#   ]
+# }
 
 ###
 
@@ -86,10 +87,11 @@ Content-Type: application/json
 # @name createDevice
 POST {{baseUrl}}/api/device?q=yes
 Content-Type: application/json
+x-auth-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjlhNjBlNTNiMTA0NDI5MDUzYzZkNDRjIn0sImlhdCI6MTc3Mjg5ODgwNywiZXhwIjoxNzcyOTA5NjA3fQ.WVpkvN7o_1yZ44p6ehGW9mMc1Km3oMEzcyGrOAHmvhE
 
-{
-  "userId": "{{userId}}"
-}
+# {
+#   "userId": "{{userId}}"
+# }
 
 ###
 @deviceId = {{createDevice.response.body._id}}

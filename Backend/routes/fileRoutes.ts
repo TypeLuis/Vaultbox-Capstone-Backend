@@ -4,7 +4,7 @@ import path from "path";
 import File from "../models/fileSchema.js";
 import Device, { type DeviceSchema } from "../models/deviceSchema.js";
 import msgError from "../utilities/msgError.js";
-import { isValidId, toNumber } from "../utilities/functions.js";
+import { getRequesterUserId, isValidId, toNumber } from "../utilities/functions.js";
 import { upload } from "../config/upload.js";
 import { minio, MINIO_BUCKET } from "../config/minioClient.js";
 import { auth } from "../middleware/auth.js";
@@ -12,16 +12,7 @@ import { auth } from "../middleware/auth.js";
 const fileRouter = express.Router();
 
 
-function getRequesterUserId(req: any): string | null {
-  // Prefer auth middleware
-  if (req.user?.id) return String(req.user.id);
 
-  // Fallbacks
-  if (req.body?.userId) return String(req.body.userId);
-  if (req.query?.userId) return String(req.query.userId);
-
-  return null;
-}
 
 async function assertOwnsDevice(userId: string, deviceId: string) {
   const device = await Device.findById(deviceId).select("userId");

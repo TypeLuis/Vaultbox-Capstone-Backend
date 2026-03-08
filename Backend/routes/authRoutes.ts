@@ -51,7 +51,7 @@ router
                 jwt.sign(
                     payload,
                     JWT_SECRET,
-                    { expiresIn: "3h" },
+                    { expiresIn: "3d" },
                     (err, token) => {
                         if (err) throw err
 

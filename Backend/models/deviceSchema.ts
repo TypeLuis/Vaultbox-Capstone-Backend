@@ -92,4 +92,7 @@ deviceSchema.virtual("availableGB").get(function () {
     return parseFloat((this.drives.reduce((sum, d) => sum + d.availableMB, 0) / 1024).toFixed(2));
 });
 
+// That makes it impossible for the same user to create two devices with the same name.
+deviceSchema.index({ userId: 1, name: 1 }, { unique: true });
+
 export default mongoose.model("Device", deviceSchema)

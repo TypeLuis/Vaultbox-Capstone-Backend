@@ -26,6 +26,13 @@ export default defineConfig(({ mode }) => {
           secure: false,
         },
       },
+
+
+      ...(env.VITE_HOST && {
+        hmr: {
+          host: env.VITE_HOST,
+        },
+      })
     },
   }
 })

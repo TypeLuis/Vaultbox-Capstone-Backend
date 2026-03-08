@@ -1,20 +1,21 @@
-import type React from "react";
 import SignUp from "../components/Signup";
 import LoginForm from "../components/Login";
+import { useState } from "react";
 
-type AuthPageProps = {
-  newUser: boolean;
-  setNewUser: React.Dispatch<React.SetStateAction<boolean>>;
-};
+// type AuthPageProps = {
+//   newUser: boolean;
+//   setNewUser: React.Dispatch<React.SetStateAction<boolean>>;
+// };
 
-export default function AuthPage({ newUser, setNewUser }: AuthPageProps) {
+export default function AuthPage() {
+  const [newUser, setNewUser] = useState(false);
   return (
     <div>
-      <h1>{newUser ? "Create account" : "Welcome back"}</h1>
+      {/* <h1>{newUser ? "Create account" : "Welcome back"}</h1> */}
 
-      {newUser ? <SignUp /> : <LoginForm />}
+      {newUser ? <SignUp setNewUser={setNewUser} /> : <LoginForm setNewUser={setNewUser} />}
 
-      <div>
+      {/* <div>
         {newUser ? (
           <p>
             Already have an account?{" "}
@@ -30,7 +31,7 @@ export default function AuthPage({ newUser, setNewUser }: AuthPageProps) {
             </button>
           </p>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

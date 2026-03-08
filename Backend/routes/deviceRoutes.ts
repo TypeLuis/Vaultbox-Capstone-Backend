@@ -3,7 +3,7 @@ import Device from "../models/deviceSchema.js";
 import mongoose from "mongoose";
 import msgError from "../utilities/msgError.js";
 import requireBody from "../middleware/requireBody.js";
-import { isValidId, toNumber } from "../utilities/functions.js";
+import { getRequesterUserId, isValidId, toNumber } from "../utilities/functions.js";
 import si from "systeminformation";
 import { auth } from "../middleware/auth.js";
 
@@ -26,13 +26,13 @@ deviceRouter
     .route("/")
 
     .post(
-        requireBody(["userId"]),
         auth,
         (async (req, res, next) => {
             const q = String(req.query.q || "");
-            const { userId } = req.body
+            const userId = getRequesterUserId(req);
+            if (!userId) return next(msgError(401, "Missing user context"));
+            if (!isValidId(String(userId))) return next(msgError(400, "Invalid userId"));
             try {
-                if (!isValidId(String(userId))) return next(msgError(400, "Invalid userId"));
                 const getDriveInfo = (drives: Drives[]) => {
                     return drives.map((drive) => ({
                         fs: drive.fs,
@@ -56,7 +56,7 @@ deviceRouter
 
                     const platform = osInfo.platform.toLowerCase()
                     // normalize rw: boolean: null -> false
-                    const normalizedDrives: Drives[] = fsSize.map((d) => ({
+                    const normalizedDrives: Drives[] = fsSize.filter((d) => d.fs !== "overlay").map((d) => ({
                         ...d,
                         rw: d.rw ?? false,
                     }));
@@ -69,13 +69,44 @@ deviceRouter
                         status: "online",
                     };
                 } else {
-                    const { name, drives } = req.body;
+                    const name = "Test Device"
+                    const drives = [
+                        {
+                            fs: '/dev/mapper/ubuntu--vg-ubuntu--lv',
+                            type: 'ext4',
+                            sizeMB: 61075263488,
+                            usedMB: 29964328960,
+                            availableMB: 27975274496,
+                            usePercent: 51.72,
+                            mount: '/',
+                            rw: true
+                        },
+                        {
+                            fs: '/dev/sdb1',
+                            type: 'ext4',
+                            sizeMB: 13889009823744,
+                            usedMB: 196360871936,
+                            availableMB: 12992606248960,
+                            usePercent: 1.49,
+                            mount: '/mnt/data',
+                            rw: true
+                        }
+                    ]
                     const [platform, real] = ["windows", false]
                     if (!name) return next(msgError(400, "name is required when not using system info"));
                     if (!drives || !Array.isArray(drives) || drives.length === 0)
                         return next(msgError(400, "drives array is required when not using system info"));
 
                     deviceData = { userId, name, os: platform, real, drives, status: "online" };
+                }
+
+                const existingDevice = await Device.findOne({
+                    userId,
+                    name: deviceData.name,
+                });
+
+                if (existingDevice) {
+                    return next(msgError(409, "Device already exists"));
                 }
 
                 const created = await Device.create(deviceData)
@@ -86,12 +117,14 @@ deviceRouter
             }
         }) as RequestHandler)
 
-    .get(auth,(async (req, res, next) => {
+    .get(auth, (async (req, res, next) => {
         try {
-            const { userId, status, q } = req.query
-
+            const { status, q } = req.query
+            const userId = getRequesterUserId(req);
             const VALID_STATUSES = ["online", "offline"]
-            const filter: Record<string, any> = {}
+            const filter: Record<string, any> = {
+                userId: userId // only logged-in user's devices
+            };
 
             if (status) {
                 const normalizedStatus = String(status).toLowerCase()
@@ -124,7 +157,7 @@ deviceRouter
 deviceRouter
     .route('/:id')
 
-    .put(auth,((async (req, res, next) => {
+    .put(auth, ((async (req, res, next) => {
         const id = String(req.params.id)
         if (!isValidId(id)) return next(msgError(400, "Invalid device id"));
 

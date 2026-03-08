@@ -1,39 +1,16 @@
 import { createContext, useContext, useMemo } from "react";
 import {useCookies} from 'react-cookie'
-import axios from 'axios'
-
-
-export type FormData = {
-    name?: string,
-    email:string,
-    password:string,
-    password2?:string
-}
-
-type AuthContextValue = {
-    token?: string;
-    login: (formdata: FormData) => Promise<void>;
-    signup: (formdata: FormData) => Promise<void>;
-    logout: () => void;
-};
+import type { FormData, AuthContextValue } from "../utilities/types/types";
+import { authFunction } from "../utilities/functions/ApiFunctions";
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
 
 export default function authProvider({children}: { children: React.ReactNode }){
     const [cookies, setCookies, removeCookies] = useCookies()
 
-    async function login(formdata:FormData){
-        let res = await axios.post("/api/auth", formdata)
-        setCookies('token', res.data.token)
-    }
-    async function signup(formdata:FormData){
-        let res = await axios.post("/api/users", formdata)
-        setCookies('token', res.data.token)
-    }
-    function logout(){
-        // ['token'].forEach(token => removeCookies(token))
-        removeCookies("token", {path : "/"})
-    }
+    const login = async (formdata:FormData) => authFunction(formdata, '/api/auth', setCookies)
+    const signup = async (formdata:FormData) => authFunction(formdata, "/api/users", setCookies)
+    const logout = () => removeCookies("token")
 
     // use memo, stores a value from computationally functions and will not rerun those functions as long as the value doesn't change
     // as long as cookies doesn't change, we don't need to rerun any of these functions
