@@ -159,12 +159,24 @@ deviceRouter
 
     .put(auth, ((async (req, res, next) => {
         const id = String(req.params.id)
+        const userId = getRequesterUserId(req)
+        if (!userId) return next(msgError(401, "Missing user context"))
+        if (!isValidId(userId)) return next(msgError(400, "Invalid User id"));
         if (!isValidId(id)) return next(msgError(400, "Invalid device id"));
 
         try {
+            const device = await Device.findById(id);
+
+            if (!device) {
+                return next(msgError(404, "Device not found"));
+            }
+
+            if (String(device.userId) !== String(userId)) {
+                return next(msgError(403, "Forbidden"));
+            }
             const updated = await Device.findByIdAndUpdate(id, req.body, {
                 new: true,
-                runValidators: true
+                runValidators: true,
             }).populate("userId", "name email")
 
             if (!updated) return next(msgError(404, "device not found"));
@@ -176,9 +188,18 @@ deviceRouter
 
     .delete(auth, ((async (req, res, next) => {
         const id = String(req.params.id)
-        if (!isValidId(id)) return next(msgError(400, "Invalid Device id"));
+        const userId = getRequesterUserId(req)
+        if (!userId) return next(msgError(401, "Missing user context"))
+        if (!isValidId(userId)) return next(msgError(400, "Invalid User id"));
+        if (!isValidId(id)) return next(msgError(400, "Invalid device id"));
 
         try {
+            const device = await Device.findById(id);
+
+            if (!device) return next(msgError(404, "Device not found"));
+
+            if (String(device.userId) !== String(userId)) return next(msgError(403, "Forbidden"));
+
             const deleted = await Device.findByIdAndDelete(id)
             if (!deleted) return next(msgError(404, "Device not found"));
             res.json(deleted)

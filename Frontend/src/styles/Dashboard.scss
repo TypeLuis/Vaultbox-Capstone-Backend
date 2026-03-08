@@ -1,0 +1,458 @@
+@keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes logo-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-3px) rotate(1deg); }
+  }
+  
+  @keyframes grid-drift {
+    from { background-position: 0 0; }
+    to   { background-position: 40px 40px; }
+  }
+  
+  // ─── Tokens ──────────────────────────────────────────────────────────────────
+  
+  $teal:        #2dd4bf;
+  $teal-bright: #5eead4;
+  $teal-dark:   #0d9488;
+  $bg:          #0d1117;
+  $bg-sidebar:  #0a0f1a;
+  $bg-card:     #111c2a;
+  $border:      rgba(#2dd4bf, 0.1);
+  $border-mid:  rgba(#2dd4bf, 0.2);
+  $text:        #cbd5e1;
+  $text-dim:    #4a6a7a;
+  $online:      #2dd4bf;
+  $offline:     #475569;
+  $danger:      #ef4444;
+  $warn:        #f59e0b;
+  
+  // ─── Root ────────────────────────────────────────────────────────────────────
+  
+  .dashboard {
+    display: flex;
+    min-height: 100vh;
+    min-width: 100vw;
+    background: $bg;
+    color: $text;
+    font-family: "Courier New", "Lucida Console", monospace;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  // Subtle animated grid background
+  .dashboard__grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba($teal, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($teal, 0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: grid-drift 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  // ─── Sidebar ─────────────────────────────────────────────────────────────────
+  
+  .dashboard__sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 220px;
+    flex-shrink: 0;
+    background: $bg-sidebar;
+    border-right: 1px solid $border;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    z-index: 10;
+  }
+  
+  .dashboard__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px 24px;
+    border-bottom: 1px solid $border;
+  }
+  
+  .dashboard__logo-svg {
+    width: 40px;
+    height: 40px;
+    animation: logo-float 4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  
+  .dashboard__brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .dashboard__brand-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #e2e8f0;
+    letter-spacing: -0.3px;
+  
+    .accent { color: $teal; }
+  }
+  
+  .dashboard__brand-sub {
+    font-size: 9px;
+    color: $text-dim;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  
+  // Nav
+  .dashboard__nav {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 12px;
+    gap: 2px;
+    flex: 1;
+  }
+  
+  .dashboard__nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: $text-dim;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  
+    &:hover {
+      background: rgba($teal, 0.06);
+      color: $text;
+    }
+  
+    &.active {
+      background: rgba($teal, 0.1);
+      color: $teal;
+      border: 1px solid rgba($teal, 0.2);
+    }
+  }
+  
+  .dashboard__nav-icon {
+    font-size: 14px;
+    width: 18px;
+    text-align: center;
+  }
+  
+  // Sidebar stats
+  .dashboard__sidebar-stats {
+    padding: 16px 20px;
+    border-top: 1px solid $border;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .dashboard__sidebar-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+  
+    .label { color: $text-dim; }
+    .value { color: $text; font-weight: 600; }
+    .value.accent { color: $teal; }
+  }
+  
+  // ─── Main ─────────────────────────────────────────────────────────────────────
+  
+  .dashboard__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+  }
+  
+  // Topbar
+  .dashboard__topbar {
+    position: sticky;
+    top: 0;
+    background: rgba($bg, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid $border;
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    z-index: 5;
+  }
+  
+  .dashboard__page-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e2e8f0;
+      letter-spacing: -0.3px;
+    }
+  }
+  
+  .dashboard__device-count {
+    font-size: 11px;
+    color: $text-dim;
+    letter-spacing: 1px;
+  }
+  
+  .dashboard__controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  // Search
+  .dashboard__search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dashboard__search-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 16px;
+    color: $text-dim;
+    pointer-events: none;
+  }
+  
+  .dashboard__search {
+    background: rgba(#0d1117, 0.8);
+    border: 1px solid $border;
+    border-radius: 8px;
+    color: $text;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 8px 12px 8px 32px;
+    width: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  
+    &::placeholder { color: $text-dim; }
+  
+    &:focus {
+      border-color: rgba($teal, 0.4);
+      box-shadow: 0 0 0 3px rgba($teal, 0.08);
+    }
+  }
+  
+  // Filter tabs
+  .dashboard__filter-tabs {
+    display: flex;
+    border: 1px solid $border;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .dashboard__filter-tab {
+    background: none;
+    border: none;
+    border-right: 1px solid $border;
+    padding: 7px 14px;
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: $text-dim;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  
+    &:last-child { border-right: none; }
+  
+    &:hover { background: rgba($teal, 0.06); color: $text; }
+  
+    &.active {
+      background: rgba($teal, 0.12);
+      color: $teal;
+    }
+  
+    &.active.online  { color: $online; background: rgba($online, 0.1); }
+    &.active.offline { color: $offline; background: rgba($offline, 0.08); }
+  }
+  
+  // Refresh button
+  .dashboard__refresh-btn {
+    background: none;
+    border: 1px solid $border;
+    border-radius: 8px;
+    color: $text-dim;
+    font-size: 16px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  
+    &:hover {
+      color: $teal;
+      border-color: rgba($teal, 0.4);
+      transform: rotate(30deg);
+    }
+  }
+  
+  // ─── Stat pills ──────────────────────────────────────────────────────────────
+  
+  .dashboard__stat-pills {
+    display: flex;
+    gap: 10px;
+    padding: 16px 28px;
+    border-bottom: 1px solid $border;
+    flex-wrap: wrap;
+  }
+  
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(#0d1117, 0.5);
+    border: 1px solid $border;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+  
+    &__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+  
+    &__label { color: $text-dim; }
+  
+    strong { color: $text; }
+  
+    &.online  .stat-pill__dot { background: $online; box-shadow: 0 0 6px rgba($online, 0.6); }
+    &.offline .stat-pill__dot { background: $offline; }
+    &.storage { .stat-pill__label { color: $text-dim; } strong { color: $teal; } }
+  }
+  
+  // ─── Content & Grid ───────────────────────────────────────────────────────────
+  
+  .dashboard__content {
+    padding: 24px 28px;
+    flex: 1;
+  }
+  
+  .dashboard__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    animation: fade-in 0.3s ease both;
+  }
+  
+  // ─── States ──────────────────────────────────────────────────────────────────
+  
+  .dashboard__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 280px;
+    color: $text-dim;
+    font-size: 13px;
+    letter-spacing: 1px;
+    animation: fade-in 0.3s ease both;
+  
+    p { margin: 0; }
+  
+    button {
+      background: none;
+      border: 1px solid $border;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: $text-dim;
+      cursor: pointer;
+      transition: all 0.2s;
+  
+      &:hover { border-color: rgba($teal, 0.4); color: $teal; }
+    }
+  
+    &.error {
+      .dashboard__state-icon { color: $danger; }
+      p { color: rgba($danger, 0.8); }
+    }
+  
+    &.empty .dashboard__state-icon { color: $teal; opacity: 0.4; }
+  }
+  
+  .dashboard__state-icon {
+    font-size: 32px;
+    opacity: 0.5;
+  }
+  
+  .dashboard__state-sub {
+    font-size: 11px;
+    color: $text-dim;
+    opacity: 0.6;
+  }
+  
+  .dashboard__spinner {
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba($teal, 0.15);
+    border-top-color: $teal;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 12px rgba($teal, 0.3);
+  }
+  
+  // ─── Responsive ──────────────────────────────────────────────────────────────
+  
+  @media (max-width: 768px) {
+    .dashboard__sidebar {
+      display: none;
+    }
+  
+    .dashboard__topbar {
+      padding: 12px 16px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .dashboard__content {
+      padding: 16px;
+    }
+  
+    .dashboard__stat-pills {
+      padding: 12px 16px;
+    }
+  
+    .dashboard__grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .dashboard__search {
+      width: 160px;
+    }
+  }
