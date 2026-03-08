@@ -168,7 +168,7 @@ export default function Dashboard() {
   }), [statusFilter, debouncedQ]);
 
   const { devices, loading, error, refresh, remove, toggleStatus } = useDevices(filters);
-
+  // console.log(devices, loading, error, refresh, remove, toggleStatus)
   // Stats
   const totalOnline = devices.filter((d) => d.status === "online").length;
   const totalOffline = devices.filter((d) => d.status === "offline").length;

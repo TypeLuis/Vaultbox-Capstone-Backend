@@ -18,7 +18,7 @@ export function useDevices(filters: Filters = {}) {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchDevices(token, filters.q);
+      const data = await fetchDevices(token, filters);
       setDevices(data);
     } catch (err: any) {
       setError(err.message ?? "Unknown error");

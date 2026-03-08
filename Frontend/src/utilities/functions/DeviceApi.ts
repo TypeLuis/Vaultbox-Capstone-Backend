@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Device } from "../types/types";
 
 export async function apiCreateDevice(token?: string, q?: string) {
     try {
@@ -30,18 +31,22 @@ export async function apiCreateDevice(token?: string, q?: string) {
 }
 
 
-export async function fetchDevices(token?: string, q?: string) {
+export async function fetchDevices(token?: string, params?: {
+    status?: "online" | "offline";
+    q?: string;
+}): Promise<Device[]> {
     try {
 
-        const params = new URLSearchParams();
-        if (q) params.set("q", q);
-        const r = await axios.get(`/api/device?${params.toString()}`, {
+        const param = new URLSearchParams()
+        if (params?.q) param.set('q', params.q) 
+        if (params?.status) param.set('status', params.status) 
+
+
+        const res = await axios.get(`/api/device?${param.toString()}`, {
             headers: { "x-auth-token": token, },
         });
-        const d = await r.data;
-        // if (!r.ok) throw new Error("Failed to fetch devices");
-        return d;
-    } catch (error:any) {
+        return res.data;
+    } catch (error: any) {
         const message =
             error?.response?.data?.error ||
             error?.response?.data?.message ||
@@ -52,6 +57,7 @@ export async function fetchDevices(token?: string, q?: string) {
         throw new Error(message);
     }
 }
+
 
 
 export async function updateDeviceStatus(
