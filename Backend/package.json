@@ -6,12 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx tsx --watch ./server.ts",
+    "start:backend": "npx tsx ./server.ts",
     "initialize": "npx tsc --init",
     "seed": "npx tsx ./utilities/seed.ts",
     "env": "node -e \"require('fs').copyFileSync('.env.example', '.env')\"",
     "install:minio": "npx tsx ./scripts/install-minio.ts",
     "start:minio": "npx tsx ./scripts/start-minio.ts",
-    "setup" : "npm run env && npm run install:minio"
+    "install:mongodb": "npx tsx ./scripts/install-mongodb.ts",
+    "start:mongodb": "npx tsx ./scripts/start-mongodb.ts",
+    "setup": "npm run env && npm run install:minio && npm run install:mongodb"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
-import express from "express"
-import * as rowdy from "rowdy-logger"
+import express from "express";
+import * as rowdy from "rowdy-logger";
 import globalerror from "./middleware/globalError.js";
 import notFound from "./middleware/notFound.js";
 import logReq from "./middleware/logReq.js";
@@ -9,7 +9,6 @@ import authRoutes from './routes/authRoutes.js'
 import { PORT } from "./utilities/config.js";
 import cors from "cors";
 import helmet from "helmet";
-// import si from "systeminformation";
 import deviceRouter from "./routes/deviceRoutes.js";
 import appRouter from "./routes/appRoutes.js";
 import fileRouter from "./routes/fileRoutes.js";
@@ -27,9 +26,6 @@ app.use(helmet()); // Adds security-related HTTP headers to help protect the app
 app.use(cors()) // Allows controlled cross-origin requests so frontend apps on other domains can access this API
 app.use(express.json()) // allows to use json like getting req.body
 app.use(logReq);
-
-
-
 
 
 // Routes
