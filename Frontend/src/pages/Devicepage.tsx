@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 // import { useDevices } from "../../hooks/useDevices";
-import { useDevices } from "../hooks/Usedevices";
+import { useDevices } from "../hooks/UseDevices";
 import { DeviceCard } from "../components/DeviceCard";
 // import "./DevicesPage.scss";
 import '../styles/DevicePage.scss'

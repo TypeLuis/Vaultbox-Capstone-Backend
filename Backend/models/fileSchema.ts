@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const fileSchema = new mongoose.Schema(
     {
         deviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Device", required: true, index: true },

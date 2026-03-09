@@ -1,4 +1,4 @@
-import { useDevices } from '../hooks/Usedevices';
+import { useDevices } from '../hooks/UseDevices';
 import VaultBoxIcon from './VaultboxIcon';
 import '../styles/NavDashboard.scss'
 import type { Page } from '../pages/Dashboard';
@@ -40,7 +40,6 @@ const NavDashboard = ({ activePage, setActivePage }: NavDashboardProps) => {
 
         <nav className="dashboard__nav">
           {NAV_ITEMS.map((item) => (
-            <>
               <button
                 key={item.id}
                 className={`dashboard__nav-item ${activePage === item.id ? "active" : ""}`}
@@ -49,7 +48,6 @@ const NavDashboard = ({ activePage, setActivePage }: NavDashboardProps) => {
                 <span>{item.icon}</span>
                 {item.label}
               </button>
-            </>
           ))}
         </nav>
 

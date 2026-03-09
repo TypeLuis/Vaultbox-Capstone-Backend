@@ -59,12 +59,15 @@ fileRouter.get(
 
       let files: any
 
-      if (minSize !== null || maxSize !== null || q !== null) {
-        filter.sizeBytes = {}
-        if (minSize !== null) filter.sizeBytes.$gte = minSize
-        if (maxSize !== null) filter.sizeBytes.$lte = maxSize
+      if (minSize !== null || maxSize !== null || q) {
+        if (minSize !== null || maxSize !== null) {
+          filter.sizeBytes = {};
+          if (minSize !== null) filter.sizeBytes.$gte = minSize;
+          if (maxSize !== null) filter.sizeBytes.$lte = maxSize;
+        }
         // regex to find query in title, $options: "i" to make case insensitive
-        if (q !== null) filter.filename = { $regex: String(q), $options: "i" };
+        if (q) filter.filenameOriginal = { $regex: String(q), $options: "i" };
+        filter.deviceId = String(deviceId);
         files = await File.find(filter)
           .sort({ createdAt: -1 })
           .populate("deviceId", "name status");

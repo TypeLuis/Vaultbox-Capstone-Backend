@@ -79,16 +79,19 @@ const deviceSchema = new mongoose.Schema({
 
 // Virtual — total across all drives in GB
 deviceSchema.virtual("storageTotalGB").get(function () {
+    if (!this.drives?.length) return 0; 
     return parseFloat((this.drives.reduce((sum, d) => sum + d.sizeMB, 0) / 1024).toFixed(2));
 });
 
 // Virtual — used across all drives in GB
 deviceSchema.virtual("storageUsedGB").get(function () {
+    if (!this.drives?.length) return 0; 
     return parseFloat((this.drives.reduce((sum, d) => sum + d.usedMB, 0) / 1024).toFixed(2));
 });
 
 // Virtual — used across all drives in GB
 deviceSchema.virtual("availableGB").get(function () {
+    if (!this.drives?.length) return 0; 
     return parseFloat((this.drives.reduce((sum, d) => sum + d.availableMB, 0) / 1024).toFixed(2));
 });
 

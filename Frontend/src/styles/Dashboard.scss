@@ -52,3 +52,35 @@ $warn: #f59e0b;
 }
 
 
+
+// ─── Coming soon ─────────────────────────────────────────────────────────────
+
+.coming-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 60vh;
+    gap: 12px;
+    color: $text-dim;
+    font-family: inherit;
+  
+    &__icon { font-size: 40px; opacity: 0.3; }
+  
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #e2e8f0;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+  
+    p {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+  }
