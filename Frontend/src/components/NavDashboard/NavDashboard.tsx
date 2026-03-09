@@ -1,7 +1,7 @@
-import { useDevices } from '../hooks/UseDevices';
-import VaultBoxIcon from './VaultboxIcon';
-import '../styles/NavDashboard.scss'
-import type { Page } from '../pages/Dashboard';
+import { useDevices } from '../../hooks/UseDevices';
+import VaultBoxIcon from '../VaultboxIcon';
+import './NavDashboard.scss'
+import type { Page } from '../../pages/Dashboard';
 
 type NavDashboardProps = {
   setActivePage: React.Dispatch<React.SetStateAction<Page>>

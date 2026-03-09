@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/authcontext";
+import { useAuth } from "../../context/authcontext";
 import { useNavigate } from "react-router-dom";
-import { LoginStyles, css } from "../styles/LoginStyles";
-import type { FormData } from "../utilities/types/types";
+import { LoginStyles, css } from "./LoginStyles";
+import type { FormData } from "../../utilities/types/types";
 
 type LoginProps = {
   setNewUser:  React.Dispatch<React.SetStateAction<boolean>>

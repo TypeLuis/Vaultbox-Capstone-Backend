@@ -22,6 +22,7 @@ function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// sometimes the backend runs before minio starts in script which gives a connection error
 async function waitForMinio(attempts = 20, delay = 1500) {
     let lastError: unknown;
 

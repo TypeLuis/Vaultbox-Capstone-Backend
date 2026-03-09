@@ -5,6 +5,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from 'express-validator'
 import { auth } from "../middleware/auth.js";
+import { rateLimit } from "express-rate-limit";
+
+const pwLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit : 5,
+    message: "too many password attempts, try again later"
+})
 
 const router = express.Router()
 
@@ -21,6 +28,7 @@ router
             check("email", "Please include a valid email").isEmail(),
             check("password", "Password required").not().isEmpty()
         ],
+        pwLimiter,
         (async (req, res, next) => {
             const errors = validationResult(req)
             if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });

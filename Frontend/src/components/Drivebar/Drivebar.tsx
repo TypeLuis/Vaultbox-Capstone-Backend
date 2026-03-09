@@ -1,6 +1,6 @@
 // import type { Drive } from "../types/device";
-import type { Drive } from "../utilities/types/types";
-import "../styles/Drivebar.scss";
+import type { Drive } from "../../utilities/types/types";
+import "./Drivebar.scss";
 
 type Props = { drive: Drive };
 

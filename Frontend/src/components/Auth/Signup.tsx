@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth} from '../context/authcontext';
-import { SignUpStyles, css } from '../styles/SignUpStyles';
-import type { FormData } from '../utilities/types/types';
+import { useAuth} from '../../context/authcontext';
+import { SignUpStyles, css } from './SignUpStyles';
+import type { FormData } from '../../utilities/types/types';
 
 type SignupProps = {
   setNewUser:  React.Dispatch<React.SetStateAction<boolean>>

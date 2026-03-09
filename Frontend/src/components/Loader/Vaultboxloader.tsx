@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/Vaultboxloader.scss";
+import "./Vaultboxloader.scss";
 
 interface VaultBoxLoaderProps {
   message?: string;

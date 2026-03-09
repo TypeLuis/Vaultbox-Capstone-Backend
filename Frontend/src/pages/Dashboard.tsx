@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/Dashboard.scss";
 import { DevicesPage } from "./Devicepage";
-import NavDashboard from "../components/NavDashboard";
+import NavDashboard from "../components/NavDashboard/NavDashboard";
 import { FilesPage } from "./FilePage";
 
 

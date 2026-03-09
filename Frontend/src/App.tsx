@@ -5,19 +5,21 @@ import AuthPage from './pages/AuthPage';
 import RequireGuest from './routes/RequireGuest';
 import Dashboard from './pages/Dashboard';
 import RootRedirect from './routes/RootRedirect';
+import DeployedPage from './pages/DeployedPage';
 
 function App() {
-  const selfHosted = import.meta.env.VITE_SELF_HOSTED === "true";
+  const selfHosted = import.meta.env.VITE_SELF_HOSTED === "false";
   return (
     <>
       {/* <h2>My App</h2> */}
       <Routes>
 
-        {/* Root redirect */}
-        <Route path="/" element={<RootRedirect />} />
 
         {selfHosted ? (
           <>
+            {/* Root redirect */}
+            <Route path="/" element={<RootRedirect />} />
+
             {/* Guest-only routes */}
             <Route element={<RequireGuest />}>
               <Route path="/auth" element={<AuthPage />} />
@@ -30,7 +32,7 @@ function App() {
           </>
         ) : (
           <>
-            <Route path="/auth" element={(<>hi</>)} />
+            <Route path="/" element={<DeployedPage />} />
             <Route path="/dashboard" element={(<>hi</>)} />
           </>
         )}

@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 // import { useDevices } from "../../hooks/useDevices";
 import { useDevices } from "../hooks/UseDevices";
-import { DeviceCard } from "../components/DeviceCard";
+import { DeviceCard } from "../components/DeviceCard/DeviceCard";
 // import "./DevicesPage.scss";
 import '../styles/DevicePage.scss'
+import { useAuth } from "../context/authcontext";
 
 type StatusFilter = "all" | "online" | "offline";
 
@@ -11,6 +12,31 @@ export function DevicesPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [searchQ, setSearchQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+
+  const { token } = useAuth();
+
+  const handleAddDevice = async () => {
+    setAdding(true);
+    setAddError(null);
+    try {
+      const res = await fetch(`/api/device?q=yes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "x-auth-token": token } : {}),
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.errors?.[0]?.msg || data?.message || "Failed");
+      refresh();
+    } catch (err: any) {
+      setAddError(err.message);
+    } finally {
+      setAdding(false);
+    }
+  };
 
   const handleSearch = (val: string) => {
     setSearchQ(val);
@@ -25,10 +51,10 @@ export function DevicesPage() {
 
 
   const { devices: allDevices } = useDevices();
-  const totalOnline  = allDevices.filter((d) => d.status === "online").length;
+  const totalOnline = allDevices.filter((d) => d.status === "online").length;
   const totalOffline = allDevices.filter((d) => d.status === "offline").length;
 
-//   const filteredStatus = statusFilter !== "all" ? statusFilter : undefined;
+  //   const filteredStatus = statusFilter !== "all" ? statusFilter : undefined;
   const { devices, loading, error, refresh, remove, toggleStatus } = useDevices(filters);
 
   const totalStorageGB = useMemo(
@@ -71,13 +97,14 @@ export function DevicesPage() {
                 {s === "all"
                   ? `All (${allDevices.length})`
                   : s === "online"
-                  ? `Online (${totalOnline})`
-                  : `Offline (${totalOffline})`}
+                    ? `Online (${totalOnline})`
+                    : `Offline (${totalOffline})`}
               </button>
             ))}
           </div>
 
           <button className="devices-page__refresh-btn" onClick={refresh} title="Refresh">↺</button>
+
         </div>
       </header>
 
@@ -116,13 +143,19 @@ export function DevicesPage() {
           </div>
         )}
 
+
         {!loading && !error && devices.length === 0 && (
           <div className="devices-page__state empty">
             <span>⬡</span>
-            <p>No devices found</p>
-            <span className="sub">
-              {searchQ ? "Try a different search term" : "Register your first device to get started"}
-            </span>
+            <p>No devices registered</p>
+            <button
+              className="devices-page__empty-cta"
+              onClick={handleAddDevice}
+              disabled={adding}
+            >
+              {adding ? "Setting up..." : "⬡ Set Up This Device"}
+            </button>
+            {addError && <span className="devices-page__add-error">{addError}</span>}
           </div>
         )}
 
