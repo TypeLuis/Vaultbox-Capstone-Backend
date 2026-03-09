@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import classes from './Main_Carousel.module.scss'
 
-const Main_Carousel: React.FC = () => {
+const Main_Carousel = () => {
 
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -227,7 +227,7 @@ const Main_Carousel: React.FC = () => {
                     <div className={classes.text_div}>
                         <h2>The Test Title</h2>
                         <p>Shop the Title</p>
-                        <Link to="/about">Shop now</Link>
+                        <Link to="/start">Shop now</Link>
                     </div>
                 </div>
 
@@ -240,7 +240,7 @@ const Main_Carousel: React.FC = () => {
                     <div className={classes.text_div}>
                         <h2>The Test Title</h2>
                         <p>Shop the Title</p>
-                        <Link to="/about">Shop now</Link>
+                        <Link to="/start">Shop now</Link>
                     </div>
                 </div>
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import Main_Carousel from '../components/Main_Carousel/Main_Carousel';
 
 type DeployedPageProps = {
