@@ -34,16 +34,26 @@ deviceRouter
             if (!isValidId(String(userId))) return next(msgError(400, "Invalid userId"));
             try {
                 const getDriveInfo = (drives: Drives[]) => {
-                    return drives.map((drive) => ({
-                        fs: drive.fs,
-                        type: drive.type,
-                        mount: drive.mount,
-                        sizeMB: parseFloat((drive.size / 1e6).toFixed(2)),
-                        usedMB: parseFloat((drive.used / 1e6).toFixed(2)),
-                        availableMB: parseFloat((drive.available / 1e6).toFixed(2)),
-                        usePercent: drive.use,
-                        rw: drive.rw,
-                    }))
+
+                    return drives
+                        .map((drive) => ({
+                            fs: drive.fs,
+                            type: drive.type,
+                            mount: drive.mount,
+                            sizeMB: toNumber((drive as any).size / 1e6),
+                            usedMB: toNumber((drive as any).used / 1e6),
+                            availableMB: toNumber((drive as any).available / 1e6),
+                            usePercent: toNumber(drive.use),
+                            rw: drive.rw ?? false,
+                        }))
+
+                        .filter(
+                            (drive) =>
+                                drive.sizeMB !== null &&
+                                drive.usedMB !== null &&
+                                drive.availableMB !== null &&
+                                drive.usePercent !== null
+                        );
                 }
                 let deviceData;
                 const useSystemInfo = q.toLowerCase() === "yes";

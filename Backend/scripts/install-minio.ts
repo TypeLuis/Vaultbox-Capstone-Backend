@@ -128,6 +128,17 @@ async function installLinux(arch: string) {
     run("systemctl start minio", "Started MinIO service");
 }
 
+// async function installMac(arch: string) {
+//     log("Detected: macOS");
+
+//     if (!isInstalled("brew")) {
+//         err("Homebrew is not installed. Install it first: https://brew.sh");
+//     }
+
+//     run("brew install minio/stable/minio", "Installed MinIO via Homebrew");
+//     run("brew services start minio/stable/minio", "Started MinIO service");
+// }
+
 async function installMac(arch: string) {
     log("Detected: macOS");
 
@@ -135,8 +146,26 @@ async function installMac(arch: string) {
         err("Homebrew is not installed. Install it first: https://brew.sh");
     }
 
-    run("brew install minio/stable/minio", "Installed MinIO via Homebrew");
-    run("brew services start minio/stable/minio", "Started MinIO service");
+    try {
+        execSync("brew list minio/stable/minio", { stdio: "ignore" });
+        info("MinIO already installed, skipping brew install.");
+    } catch {
+        run("brew install minio/stable/minio", "Installed MinIO via Homebrew");
+    }
+
+    const homeDir = process.env.HOME || process.cwd();
+    const dataDir = path.join(homeDir, "minio-data");
+
+    if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+        log(`Created data dir: ${dataDir}`);
+    } else {
+        info(`Data dir already exists: ${dataDir}`);
+    }
+
+    warn("MinIO Homebrew formula does not support brew services on macOS.");
+    info("Start MinIO manually with:");
+    info(`minio server "${dataDir}" --console-address ":9001"`);
 }
 
 async function installWindows() {
